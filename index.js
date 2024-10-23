@@ -9,6 +9,7 @@ app.use(cors({
     origin: FRONTEND_URL
 }));
 
+
 //ROUTES
 
 

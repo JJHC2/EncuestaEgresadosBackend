@@ -1,4 +1,4 @@
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://encuesta-frontend.onrender.com';
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || 5433;
 const DB_USER = process.env.DB_USER || 'postgres';
