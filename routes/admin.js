@@ -4,10 +4,11 @@ const pool = require("../db");
 const authorization = require("../middleware/authorization");
 const userController = require("../controllers/UserController");
 const checkPermission = require("../middleware/CheckPermission");
-const pdfkit = require("../libs/PDFkit.js");
+const EncuestaCrudController = require("../controllers/EncuestaCrudController");
 
 //ID del permiso de administrador para gestionar usuarios
 const PERMISSION_MANAGE_USERS = 6;
+
 
 
 
@@ -45,25 +46,11 @@ router.put("/users/:id", authorization, checkPermission(PERMISSION_MANAGE_USERS)
 // Ruta para eliminar un usuario
 router.delete("/users/:id", authorization, checkPermission(PERMISSION_MANAGE_USERS), userController.deleteUser);
 
-//Ruta para el PDF
-router.get("/pdf", (req, res) => {
 
-  const stream = res.writeHead(200,{
-    'Content-Type': 'application/pdf',
-    'Content-Disposition': 'attachment; filename=ReportesUsuarios.pdf'
-  })
-  pdfkit.buildPDF(
-    (data) => {
-      stream.write(data) 
-    },
-    () => {
-      stream.end()
-    }
-  );
-
-  res.send("PDF generado")
-});
-
-
+//ENDPOINTS ENCUESTA CRUD
+router.get("/responses", authorization, EncuestaCrudController.GetResponses);
+router.get("/responses/:id", authorization, EncuestaCrudController.GetResponsesById);
+router.get("/countjob", authorization, EncuestaCrudController.CountJob);
+router.get("/jobdata", authorization, EncuestaCrudController.JobData);
 
 module.exports = router;

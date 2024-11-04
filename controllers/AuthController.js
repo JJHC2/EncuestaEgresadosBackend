@@ -1,4 +1,4 @@
-// controllers/AuthController.js
+
 const pool = require("../db");
 const bcrypt = require("bcrypt");
 const sendResetEmail = require("../libs/emails/emails"); 
@@ -13,7 +13,6 @@ const forgotPassword = async (req, res) => {
             return res.status(404).json({ message: "El usuario no existe" });
         }
 
-        // Cambia user.id a user.rows[0].id
         const resetToken = jwt.sign({ userId: user.rows[0].id }, process.env.jwtSecret, { expiresIn: "15m" });
 
         await sendResetEmail(user_email, resetToken);

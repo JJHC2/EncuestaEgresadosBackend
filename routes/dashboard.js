@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 const authorization = require("../middleware/authorization");
-
+const EncuestaController = require("../controllers/EncuestaController");
 // Define la ruta para obtener el dashboard
 router.get("/", authorization, async (req, res) => {
     try {
@@ -15,5 +15,8 @@ router.get("/", authorization, async (req, res) => {
 });
 
 
+//Rutas para almacenar la encuesta
+router.post("/encuesta", authorization, EncuestaController.Respuestas);
+router.get("/encuesta/check", authorization, EncuestaController.CheckResponse);
 
 module.exports = router;

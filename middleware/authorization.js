@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+
+//Modulo para validar el token 
 module.exports = async (req, res, next) => {
     try {
         const token = req.header("token");
