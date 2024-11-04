@@ -2,9 +2,9 @@ const router = require("express").Router();
 const pool = require("../db");
 const bcrypt = require("bcrypt");
 const jwtGenerator = require("../utils/jwtGenerator");
-const validInfo = require("../middleware/validinfo"); 
+const validInfo = require("../middleware/validInfo"); 
 const authorization = require("../middleware/authorization");
-
+const AuthController = require("../controllers/AuthController");
 //Registro
 router.post("/register", validInfo, async (req, res) => {
   try {
@@ -62,7 +62,7 @@ router.post("/login", validInfo, async (req, res) => {
     if (!validPassword) {
       return res.status(401).send("Password or Email is incorrect");
     }
-
+    
     
     const token = jwtGenerator(user.rows[0].id);
 
@@ -95,6 +95,11 @@ router.post("/login", validInfo, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+//Recuperacion de contraseña y actualizacion
+//Ruta para recuperacion de contraseña por correo
+router.post("/forgot-password", AuthController.forgotPassword);
+router.post("/reset-password", AuthController.resetPassword);
 
 //Private Routes
 router.get("/is-verify", authorization, async (req, res) => {

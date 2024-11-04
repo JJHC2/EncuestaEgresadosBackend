@@ -5,6 +5,10 @@ module.exports = (req,res,next) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail);
     }
 
+    if(req.matricula > 9){
+        return res.status(401).json("Matricula no debe ser mayor a 9 caracteres");
+    }
+
     if(req.path === "/register"){
         if(![email,name,password,matricula].every(Boolean)){
             return res.status(401).json("Missing Credentials");
