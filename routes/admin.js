@@ -10,8 +10,6 @@ const EncuestaCrudController = require("../controllers/EncuestaCrudController");
 const PERMISSION_MANAGE_USERS = 6;
 
 
-
-
 //Ruta Principal
 router.get("/", authorization, async (req, res) => {
   try {
