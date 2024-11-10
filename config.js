@@ -1,7 +1,6 @@
 const FRONTEND_URL = process.env.FRONTEND_URL; 
 const EMAIL_USER="al222110834@gmail.com";
 const EMAIL_PASS="sfpj tbgi ljfi finy";
-
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || 5433;
 const DB_USER = process.env.DB_USER || 'postgres';

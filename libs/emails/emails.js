@@ -46,7 +46,6 @@ const sendResetEmail = (user_email, resetToken) => {
                     <p style="font-size: 12px; color: #4CAF50; text-align: center; word-break: break-all;">
                         <a href="${FRONTEND_URL}/reset-password/${resetToken}" style="color: #4CAF50;">
                             ${FRONTEND_URL}/reset-password/${resetToken}
-                        </a>
                     </p>
                 </div>
             </div>
