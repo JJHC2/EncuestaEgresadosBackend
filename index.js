@@ -2,10 +2,10 @@ const express = require("express");
 const cors = require("cors");
 const { PORT } = require("./config");
 const app = express();
-
+const FRONTEND_URL = require('./config');
 
 const corsOptions ={
-    origin: process.env.FRONTEND_URL,
+    origin: FRONTEND_URL,
     optionSuccessStatus: 200
 }
 
