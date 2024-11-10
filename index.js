@@ -1,10 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 const { PORT } = require('./config');
-;
+const FRONTEND_URL = require('./config');
 
 const app = express();
 
+const corsOptions = {
+    origin: FRONTEND_URL,
+    optionsSuccessStatus: 200 
+};
 
 app.use(cors());
 
