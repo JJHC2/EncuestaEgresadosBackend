@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-//Modulo para validar el token 
+// Modulo para validar el token 
 module.exports = async (req, res, next) => {
     try {
         const token = req.header("token");
@@ -16,7 +16,13 @@ module.exports = async (req, res, next) => {
         next();
     } catch (err) {
         console.log(err);
-        res.status(401).json({ message: 'Unauthorized' });
+
+        // Detecta si el error es por expiración del token
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: 'El token ha expirado' });
+        }
+
+        // Otros errores de autenticación
+        res.status(401).json({ message: 'token expirado' });
     }
 };
-
