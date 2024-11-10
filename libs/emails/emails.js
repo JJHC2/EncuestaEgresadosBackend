@@ -25,7 +25,7 @@ const sendResetEmail = (user_email, resetToken) => {
                     
                     <!-- Botón de Acción -->
                     <div style="text-align: center; margin: 20px 0;">
-                        <a href="${FRONTEND_URL}reset-password/${resetToken}" style="background-color: #4CAF50; color: #ffffff; padding: 12px 24px; text-decoration: none; font-size: 16px; border-radius: 5px; display: inline-block; box-shadow: 0 4px 6px rgba(0, 128, 0, 0.3);">
+                        <a href="http://localhost:3000/reset-password/${resetToken}" style="background-color: #4CAF50; color: #ffffff; padding: 12px 24px; text-decoration: none; font-size: 16px; border-radius: 5px; display: inline-block; box-shadow: 0 4px 6px rgba(0, 128, 0, 0.3);">
                             Restablecer Contraseña
                         </a>
                     </div>
@@ -43,8 +43,8 @@ const sendResetEmail = (user_email, resetToken) => {
                         Si tienes problemas para hacer clic en el botón, copia y pega el siguiente enlace en tu navegador:
                     </p>
                     <p style="font-size: 12px; color: #4CAF50; text-align: center; word-break: break-all;">
-                        <a href="${FRONTEND_URL}/reset-password/${resetToken}" style="color: #4CAF50;">
-                           ${FRONTEND_URL}/reset-password/${resetToken}
+                        <a href="http://localhost:3000/reset-password/${resetToken}" style="color: #4CAF50;">
+                            http://localhost:3000/reset-password/${resetToken}
                         </a>
                     </p>
                 </div>
