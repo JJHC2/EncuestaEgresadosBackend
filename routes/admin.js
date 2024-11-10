@@ -6,11 +6,6 @@ const userController = require("../controllers/UserController");
 const checkPermission = require("../middleware/CheckPermission");
 const EncuestaCrudController = require("../controllers/EncuestaCrudController");
 
-//ID del permiso de administrador para gestionar usuarios
-const PERMISSION_MANAGE_USERS = 6;
-
-
-//Ruta Principal
 router.get("/", authorization, async (req, res) => {
   try {
     const user = await pool.query(
@@ -29,26 +24,34 @@ router.get("/", authorization, async (req, res) => {
   }
 });
 
+
+
+// Definición de permisos
+const PERMISSION_MANAGE_USERS = 6; // Administrar usuarios (agregar, editar, eliminar)
+const PERMISSION_GET_USERS = 5; // Solo obtener usuarios
+
 // Ruta para obtener todos los usuarios
-router.get("/users", authorization, checkPermission(PERMISSION_MANAGE_USERS), userController.getAllUsers);
+router.get("/users", authorization, checkPermission([PERMISSION_GET_USERS, PERMISSION_MANAGE_USERS]), userController.getAllUsers);
 
 // Ruta para obtener un usuario por ID
-router.get("/users/:id", authorization, checkPermission(PERMISSION_MANAGE_USERS), userController.getUserById);
+router.get("/users/:id", authorization, checkPermission([PERMISSION_GET_USERS, PERMISSION_MANAGE_USERS]), userController.getUserById);
 
 // Ruta para crear un usuario
-router.post("/users", authorization, checkPermission(PERMISSION_MANAGE_USERS), userController.createUser);
+router.post("/users", authorization, checkPermission([PERMISSION_MANAGE_USERS]), userController.createUser);
 
 // Ruta para actualizar un usuario
-router.put("/users/:id", authorization, checkPermission(PERMISSION_MANAGE_USERS), userController.updateUser);
+router.put("/users/:id", authorization, checkPermission([PERMISSION_MANAGE_USERS]), userController.updateUser);
 
 // Ruta para eliminar un usuario
-router.delete("/users/:id", authorization, checkPermission(PERMISSION_MANAGE_USERS), userController.deleteUser);
-
+router.delete("/users/:id", authorization, checkPermission([PERMISSION_MANAGE_USERS]), userController.deleteUser);
 
 //ENDPOINTS ENCUESTA CRUD
 router.get("/responses", authorization, EncuestaCrudController.GetResponses);
-router.get("/responses/:id", authorization, EncuestaCrudController.GetResponsesById);
+router.get("/responses/:userName", authorization, EncuestaCrudController.GetResponsesByUserName);
 router.get("/countjob", authorization, EncuestaCrudController.CountJob);
 router.get("/jobdata", authorization, EncuestaCrudController.JobData);
+router.get("/countresponses", authorization, EncuestaCrudController.CountResponses);
+router.get("/countresponsebysection", authorization, EncuestaCrudController.SectionData);
+router.get("/academica", authorization, EncuestaCrudController.SatisfaccionData);
 
 module.exports = router;

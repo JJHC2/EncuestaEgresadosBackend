@@ -15,6 +15,7 @@ app.use(express.json());
 app.use('/auth', require('./routes/encuestaAuth'));
 app.use('/dashboard', require('./routes/dashboard'));
 app.use('/admin', require('./routes/admin'));
+app.use('/profile', require('./routes/Profile'));
 
 
 
