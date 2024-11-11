@@ -43,22 +43,17 @@ const createUser = async (req, res) => {
     );
 
     if (existingUser.rows.length > 0) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "El usuario ya existe con ese correo electrónico o matrícula.",
-        });
+      return res.status(400).json({
+        message: "El usuario ya existe con ese correo electrónico o matrícula.",
+      });
     }
 
     // Validar que la matrícula sea numérica y tenga 9 dígitos
     if (!/^\d{9}$/.test(user_matricula)) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "La matrícula debe ser numérica y tener exactamente 9 dígitos.",
-        });
+      return res.status(400).json({
+        message:
+          "La matrícula debe ser numérica y tener exactamente 9 dígitos.",
+      });
     }
 
     // Validar que la contraseña tenga entre 2 y 15 caracteres
@@ -103,7 +98,7 @@ const updateUser = async (req, res) => {
     // Verificar si el correo ya existe
     if (user_email) {
       const emailCheck = await pool.query(
-        'SELECT * FROM users WHERE user_email = $1 AND id != $2',
+        "SELECT * FROM users WHERE user_email = $1 AND id != $2",
         [user_email, id]
       );
       if (emailCheck.rowCount > 0) {
@@ -118,7 +113,7 @@ const updateUser = async (req, res) => {
     // Verificar si la matrícula ya existe
     if (user_matricula) {
       const matriculaCheck = await pool.query(
-        'SELECT * FROM users WHERE user_matricula = $1 AND id != $2',
+        "SELECT * FROM users WHERE user_matricula = $1 AND id != $2",
         [user_matricula, id]
       );
       if (matriculaCheck.rowCount > 0) {
@@ -128,12 +123,10 @@ const updateUser = async (req, res) => {
       }
 
       if (!/^\d{9}$/.test(user_matricula)) {
-        return res
-          .status(400)
-          .json({
-            message:
-              "La matrícula debe ser numérica y tener exactamente 9 dígitos.",
-          });
+        return res.status(400).json({
+          message:
+            "La matrícula debe ser numérica y tener exactamente 9 dígitos.",
+        });
       }
       updates.push(`user_matricula = $${updates.length + 1}`);
       values.push(user_matricula);
@@ -182,18 +175,32 @@ const updateUser = async (req, res) => {
   }
 };
 
-// Eliminar un usuario
+// Eliminar un usuario y validar que ninguna encuesta este enlazado a ese usuario caso contrario no se podra eleiminar
+
 const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query("DELETE FROM users WHERE id = $1", [id]);
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: "User not found" });
+    const user = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+    if (user.rows.length === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    res.status(200).json({ message: "User deleted successfully!" });
+    const encuestas = await pool.query(
+      "SELECT * FROM respuestas_encuesta WHERE user_id = $1",
+      [id]
+    );
+    if (encuestas.rows.length > 0) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "No se puede eliminar el usuario porque tiene encuestas asociadas",
+        });
+    }
+    await pool.query("DELETE FROM users WHERE id = $1", [id]);
+    res.status(200).json({ message: "Usuario eliminado con éxito" });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).send("Error del servidor");
   }
 };
 
