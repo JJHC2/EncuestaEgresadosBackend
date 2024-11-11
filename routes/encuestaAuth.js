@@ -99,7 +99,7 @@ router.post("/login", validInfo, async (req, res) => {
 //Recuperacion de contraseña y actualizacion
 //Ruta para recuperacion de contraseña por correo
 router.post("/forgot-password", AuthController.forgotPassword);
-router.post("/reset-password", AuthController.resetPassword);
+router.post("/reset-password",validInfo, AuthController.resetPassword);
 
 //Private Routes
 router.get("/is-verify", authorization, async (req, res) => {

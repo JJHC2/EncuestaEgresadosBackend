@@ -6,14 +6,19 @@ module.exports = (req, res, next) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail);
     }
 
-    // Validación de matrícula (máximo 9 caracteres)
-    if (matricula && matricula.length > 9) {
-        return res.status(401).json("Matrícula no debe ser mayor a 9 caracteres");
+    // Validación de matrícula (debe ser numérica y de 4 a 9 caracteres)
+    function validMatricula(userMatricula) {
+        return /^[0-9]{4,9}$/.test(userMatricula); 
     }
 
-    // Validación de contraseña (máximo 15 caracteres, sin caracteres especiales)
+    // Validación de nombre (solo letras)
+    function validName(userName) {
+        return /^[A-Za-z\s]+$/.test(userName); 
+    }
+
+    // Validación de contraseña (de 4 a 15 caracteres, solo letras y números)
     function validPassword(userPassword) {
-        return /^[A-Za-z0-9]{1,15}$/.test(userPassword); // Solo letras y números, hasta 15 caracteres
+        return /^[A-Za-z0-9]{4,15}$/.test(userPassword);
     }
 
     if (req.path === "/register") {
@@ -21,8 +26,12 @@ module.exports = (req, res, next) => {
             return res.status(401).json("Missing Credentials");
         } else if (!validEmail(email)) {
             return res.status(401).json("Invalid Email");
+        } else if (!validName(name)) {
+            return res.status(401).json("El nombre solo debe contener letras y espacios.");
+        } else if (!validMatricula(matricula)) {
+            return res.status(401).json("La matrícula debe ser numérica y tener entre 4 y 9 caracteres.");
         } else if (!validPassword(password)) {
-            return res.status(401).json("La contraseña no debe superar 15 caracteres y solo debe contener letras y números.");
+            return res.status(401).json("La contraseña debe tener entre 4 y 15 caracteres y solo contener letras y números.");
         }
     } else if (req.path === "/login") {
         if (![email, password].every(Boolean)) {
@@ -30,7 +39,7 @@ module.exports = (req, res, next) => {
         } else if (!validEmail(email)) {
             return res.status(401).json("Invalid Email");
         } else if (!validPassword(password)) {
-            return res.status(401).json("La contraseña no debe superar 15 caracteres y solo debe contener letras y números.");
+            return res.status(401).json("La contraseña debe tener entre 4 y 15 caracteres y solo contener letras y números.");
         }
     }
 
