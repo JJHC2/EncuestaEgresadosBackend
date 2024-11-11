@@ -94,32 +94,39 @@ const createUser = async (req, res) => {
 // Actualizar un usuario
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { user_name, user_email, user_password, user_matricula, role_id } =
-    req.body;
+  const { user_name, user_email, user_matricula, role_id } = req.body;
 
   try {
     const updates = [];
     const values = [];
 
-    // Validación para el nombre
-    if (user_name) {
-      if (user_name.length < 2) {
+    // Verificar si el correo ya existe
+    if (user_email) {
+      const emailCheck = await pool.query(
+        'SELECT * FROM users WHERE user_email = $1 AND id != $2',
+        [user_email, id]
+      );
+      if (emailCheck.rowCount > 0) {
         return res
           .status(400)
-          .json({ message: "El nombre debe tener al menos 2 caracteres." });
+          .json({ message: "El correo electrónico ya está en uso." });
       }
-      updates.push(`user_name = $${updates.length + 1}`);
-      values.push(user_name);
-    }
-
-    // Validación para el email
-    if (user_email) {
       updates.push(`user_email = $${updates.length + 1}`);
       values.push(user_email);
     }
 
-    // Validación para la matrícula
+    // Verificar si la matrícula ya existe
     if (user_matricula) {
+      const matriculaCheck = await pool.query(
+        'SELECT * FROM users WHERE user_matricula = $1 AND id != $2',
+        [user_matricula, id]
+      );
+      if (matriculaCheck.rowCount > 0) {
+        return res
+          .status(400)
+          .json({ message: "La matrícula ya está en uso." });
+      }
+
       if (!/^\d{9}$/.test(user_matricula)) {
         return res
           .status(400)
@@ -130,6 +137,17 @@ const updateUser = async (req, res) => {
       }
       updates.push(`user_matricula = $${updates.length + 1}`);
       values.push(user_matricula);
+    }
+
+    // Validación para el nombre
+    if (user_name) {
+      if (user_name.length < 2) {
+        return res
+          .status(400)
+          .json({ message: "El nombre debe tener al menos 2 caracteres." });
+      }
+      updates.push(`user_name = $${updates.length + 1}`);
+      values.push(user_name);
     }
 
     // Validación para el rol
