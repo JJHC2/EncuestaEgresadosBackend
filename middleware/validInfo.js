@@ -11,9 +11,9 @@ module.exports = (req, res, next) => {
         return /^[0-9]{4,9}$/.test(userMatricula); 
     }
 
-    // Validación de nombre (solo letras)
+    // Validación de nombre (solo letras) espacios 
     function validName(userName) {
-        return /^[A-Za-z\s]+$/.test(userName); 
+        return /^[A-Za-z\s]+$/.test(userName);
     }
 
     // Validación de contraseña (de 4 a 15 caracteres, solo letras y números)

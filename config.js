@@ -1,4 +1,4 @@
-const FRONTEND_URL = process.env.FRONTEND_URL; 
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000"; 
 const EMAIL_USER="al222110834@gmail.com";
 const EMAIL_PASS="sfpj tbgi ljfi finy";
 const DB_HOST = process.env.DB_HOST || 'localhost';

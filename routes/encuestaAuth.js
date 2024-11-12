@@ -13,8 +13,9 @@ router.post("/register", validInfo, async (req, res) => {
     // Verificar si el correo o la matrícula ya existen o el usuario ya existe
     const existingUser = await pool.query(
       "SELECT * FROM users WHERE user_email = $1 OR user_matricula = $2 OR user_name = $3",
-      [email, matricula]
+      [email, matricula, name]
     );
+    
 
     if (existingUser.rows.length > 0) {
       if (existingUser.rows[0].user_email === email) {
@@ -40,13 +41,16 @@ router.post("/register", validInfo, async (req, res) => {
     );
 
     // Generar y devolver el token de autenticación
-    const token = jwtGenerator(newUser.rows[0].id);
+    const token = jwtGenerator(newUser.rows[0].user_id);
     res.json({ token, role: newUser.rows[0].role_id });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
   }
 });
+
+
+
 
 //Login Route
 router.post("/login", validInfo, async (req, res) => {
