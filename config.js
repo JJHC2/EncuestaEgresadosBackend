@@ -1,12 +1,15 @@
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000"; 
-const EMAIL_USER="al222110834@gmail.com";
-const EMAIL_PASS="sfpj tbgi ljfi finy";
+require('dotenv').config();
+
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || 5433;
 const DB_USER = process.env.DB_USER || 'postgres';
 const DB_PASSWORD = process.env.DB_PASSWORD || '12345678';
 const DB_DATABASE = process.env.DB_DATABASE || 'encuesta_egresados';
 const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 module.exports = {
     EMAIL_PASS,
@@ -18,4 +21,5 @@ module.exports = {
     DB_PASSWORD,
     DB_DATABASE,
     PORT,
-    };
+    JWT_SECRET
+};
