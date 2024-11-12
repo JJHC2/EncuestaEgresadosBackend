@@ -1,2 +1,5 @@
 node_modules
+# Ignorar archivos .env
 .env
+# Ignorar archivos .env.local
+.env.local
