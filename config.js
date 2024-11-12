@@ -9,12 +9,14 @@ const DB_USER = process.env.DB_USER || 'postgres';
 const DB_PASSWORD = process.env.DB_PASSWORD || '12345678';
 const DB_DATABASE = process.env.DB_DATABASE || 'encuesta_egresados';
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET;
+const DB_SSL=true
+const JWT_SECRET = "cat123";
 
 module.exports = {
     EMAIL_PASS,
     EMAIL_USER,
     FRONTEND_URL,
+    DB_SSL,
     DB_HOST,
     DB_PORT,
     DB_USER,
