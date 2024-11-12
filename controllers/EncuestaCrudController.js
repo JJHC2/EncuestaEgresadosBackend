@@ -76,6 +76,20 @@ const JobData = async (req, res) => {
   }
 };
 
+//Peticion para eliminar todas las encuestas asociadas a un usuario en especifico por su id
+const DeleteUserResponses = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const response = await pool.query(
+      "DELETE FROM respuestas_encuesta WHERE user_id = $1",
+      [userId]
+    );
+    res.json(response.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
 
 //Peticion para grafica de barras de secciones de la encuesta
 const SectionData = async (req, res) => {
@@ -137,6 +151,7 @@ const SatisfaccionData = async (req, res) => {
 }; 
 
 module.exports = {
+  DeleteUserResponses,
   SectionData,
   SatisfaccionData,
   GetResponses,

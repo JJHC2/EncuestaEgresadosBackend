@@ -5,6 +5,7 @@ const authorization = require("../middleware/authorization");
 const userController = require("../controllers/UserController");
 const checkPermission = require("../middleware/CheckPermission");
 const EncuestaCrudController = require("../controllers/EncuestaCrudController");
+const validInfo = require('../middleware/validInfo');
 
 router.get("/", authorization, async (req, res) => {
   try {
@@ -37,10 +38,10 @@ router.get("/users", authorization, checkPermission([PERMISSION_GET_USERS, PERMI
 router.get("/users/:id", authorization, checkPermission([PERMISSION_GET_USERS, PERMISSION_MANAGE_USERS]), userController.getUserById);
 
 // Ruta para crear un usuario
-router.post("/users", authorization, checkPermission([PERMISSION_MANAGE_USERS]), userController.createUser);
+router.post("/users", authorization,validInfo, checkPermission([PERMISSION_MANAGE_USERS]), userController.createUser);
 
 // Ruta para actualizar un usuario
-router.put("/users/:id", authorization, checkPermission([PERMISSION_MANAGE_USERS]), userController.updateUser);
+router.put("/users/:id", authorization,validInfo, checkPermission([PERMISSION_MANAGE_USERS]), userController.updateUser);
 
 // Ruta para eliminar un usuario
 router.delete("/users/:id", authorization, checkPermission([PERMISSION_MANAGE_USERS]), userController.deleteUser);
@@ -48,6 +49,7 @@ router.delete("/users/:id", authorization, checkPermission([PERMISSION_MANAGE_US
 //ENDPOINTS ENCUESTA CRUD
 router.get("/responses", authorization, EncuestaCrudController.GetResponses);
 router.get("/responses/:userName", authorization, EncuestaCrudController.GetResponsesByUserName);
+router.post("/deletesurveys", authorization, EncuestaCrudController.DeleteUserResponses);
 router.get("/countjob", authorization, EncuestaCrudController.CountJob);
 router.get("/jobdata", authorization, EncuestaCrudController.JobData);
 router.get("/countresponses", authorization, EncuestaCrudController.CountResponses);
