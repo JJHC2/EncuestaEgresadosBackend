@@ -19,13 +19,13 @@ router.post("/register", validInfo, async (req, res) => {
 
     if (existingUser.rows.length > 0) {
       if (existingUser.rows[0].user_email === email) {
-        return res.status(401).send("User with this email already exists");
+        return res.status(401).send("El correo ya está registrado");
       }
       if (existingUser.rows[0].user_matricula === matricula) {
-        return res.status(401).send("User with this matricula already exists");
+        return res.status(401).send("La matrícula ya está registrada");
       }
       if (existingUser.rows[0].user_name === name) {
-        return res.status(401).send("User with this name already exists");
+        return res.status(401).send("El nombre de usuario ya está registrado");
       }
     }
 
