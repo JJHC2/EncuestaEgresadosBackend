@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 const sendResetEmail = (user_email, resetToken) => {
   const mailOptions = {
-    from: "al222110834@gmail.com",
+    from: EMAIL_USER,
     to: user_email,
     subject: "Solicitud de Restablecimiento de Contraseña",
     html: `
