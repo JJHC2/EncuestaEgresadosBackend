@@ -48,6 +48,13 @@ const createUser = async (req, res) => {
       });
     }
 
+    //Validar el nombre no tenga espacios
+
+    if(user_name.includes(" ")){
+      return res.status(400).json({ message: "El nombre de usuario no puede contener espacios." });
+    }
+
+
     // Validar que la matrícula sea numérica y tenga 9 dígitos
     if (!/^\d{9}$/.test(user_matricula)) {
       return res.status(400).json({
@@ -141,6 +148,26 @@ const updateUser = async (req, res) => {
       }
       updates.push(`user_name = $${updates.length + 1}`);
       values.push(user_name);
+    }
+
+    if (user_name) {
+      const userNameCheck = await pool.query(
+        "SELECT * FROM users WHERE user_name = $1 AND id != $2",
+        [user_name, id]
+      );
+      if (userNameCheck.rowCount > 0) {
+        return res
+          .status(400)
+          .json({ message: "El nombre de usuario ya está en uso." });
+      }
+      updates.push(`user_name = $${updates.length + 1}`);
+      values.push(user_name);
+    }
+
+    if (user_name.includes(" ")) {
+      return res
+        .status(400)
+        .json({ message: "El nombre de usuario no puede contener espacios." });
     }
 
     // Validación para el rol

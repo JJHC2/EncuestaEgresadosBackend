@@ -16,7 +16,9 @@ router.post("/register", validInfo, async (req, res) => {
       [email, matricula, name]
     );
     
-
+    if (name.includes(" ")) {
+      return res.status(401).send("El nombre de usuario no puede contener espacios");
+    }
     if (existingUser.rows.length > 0) {
       if (existingUser.rows[0].user_email === email) {
         return res.status(401).send("User with this email already exists");
