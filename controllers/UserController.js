@@ -139,18 +139,9 @@ const updateUser = async (req, res) => {
       values.push(user_matricula);
     }
 
-    // Validación para el nombre
+    // Validación para el nombre de usuario
     if (user_name) {
-      if (user_name.length < 2) {
-        return res
-          .status(400)
-          .json({ message: "El nombre debe tener al menos 2 caracteres." });
-      }
-      updates.push(`user_name = $${updates.length + 1}`);
-      values.push(user_name);
-    }
-
-    if (user_name) {
+      // Verificar si el nombre de usuario ya existe
       const userNameCheck = await pool.query(
         "SELECT * FROM users WHERE user_name = $1 AND id != $2",
         [user_name, id]
@@ -160,14 +151,24 @@ const updateUser = async (req, res) => {
           .status(400)
           .json({ message: "El nombre de usuario ya está en uso." });
       }
+
+      // Verificar si el nombre tiene al menos 2 caracteres
+      if (user_name.length < 2) {
+        return res
+          .status(400)
+          .json({ message: "El nombre debe tener al menos 2 caracteres." });
+      }
+
+      // Verificar si el nombre tiene espacios
+      if (user_name.includes(" ")) {
+        return res
+          .status(400)
+          .json({ message: "El nombre de usuario no puede contener espacios." });
+      }
+
+      // Si pasa todas las validaciones, se agrega a la lista de actualizaciones
       updates.push(`user_name = $${updates.length + 1}`);
       values.push(user_name);
-    }
-
-    if (user_name.includes(" ")) {
-      return res
-        .status(400)
-        .json({ message: "El nombre de usuario no puede contener espacios." });
     }
 
     // Validación para el rol
@@ -201,6 +202,7 @@ const updateUser = async (req, res) => {
     res.status(500).send("Error del servidor");
   }
 };
+
 
 // Eliminar un usuario y validar que ninguna encuesta este enlazado a ese usuario caso contrario no se podra eleiminar
 
