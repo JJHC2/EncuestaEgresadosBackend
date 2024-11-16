@@ -48,7 +48,7 @@ router.delete("/users/:id", authorization, checkPermission([PERMISSION_MANAGE_US
 
 //ENDPOINTS ENCUESTA CRUD
 router.get("/responses", authorization, EncuestaCrudController.GetResponses);
-router.get("/responses/:userName", authorization, EncuestaCrudController.GetResponsesByUserName);
+router.get("/responses/:userEmail", authorization, EncuestaCrudController.GetResponsesByUserEmail);
 router.post("/deletesurveys", authorization, EncuestaCrudController.DeleteUserResponses);
 router.get("/countjob", authorization, EncuestaCrudController.CountJob);
 router.get("/jobdata", authorization, EncuestaCrudController.JobData);

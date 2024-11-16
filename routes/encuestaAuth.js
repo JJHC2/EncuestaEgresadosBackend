@@ -16,18 +16,16 @@ router.post("/register", validInfo, async (req, res) => {
       [email, matricula, name]
     );
     
-    if (name.includes(" ")) {
-      return res.status(401).send("El nombre de usuario no puede contener espacios");
-    }
+
     if (existingUser.rows.length > 0) {
       if (existingUser.rows[0].user_email === email) {
-        return res.status(401).send("User with this email already exists");
+        return res.status(401).json({ error: "El correo ya está registrado" });
       }
       if (existingUser.rows[0].user_matricula === matricula) {
-        return res.status(401).send("User with this matricula already exists");
+        return res.status(401).json({ error: "La matrícula ya está registrada" });
       }
       if (existingUser.rows[0].user_name === name) {
-        return res.status(401).send("User with this name already exists");
+        return res.status(401).json({ error: "El usuario ya existe" });
       }
     }
 
@@ -47,7 +45,7 @@ router.post("/register", validInfo, async (req, res) => {
     res.json({ token, role: newUser.rows[0].role_id });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -64,7 +62,7 @@ router.post("/login", validInfo, async (req, res) => {
     ]);
 
     if (user.rows.length === 0) {
-      return res.status(401).send("Password or Email is incorrect");
+      return res.status(401).json({ error: "El correo no existe" });
     }
 
     const validPassword = await bcrypt.compare(
@@ -73,7 +71,7 @@ router.post("/login", validInfo, async (req, res) => {
     );
 
     if (!validPassword) {
-      return res.status(401).send("Password or Email is incorrect");
+      return res.status(401).json({ error: "Contraseña Incorrecta" });
     }
 
     const token = jwtGenerator(user.rows[0].id);
@@ -99,7 +97,7 @@ router.post("/login", validInfo, async (req, res) => {
     return res.json({ ...response, redirect: "/home" });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ error: "Server error" });
   }
 });
 

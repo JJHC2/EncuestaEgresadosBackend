@@ -1,6 +1,6 @@
 const pool = require("../db");
 const bcrypt = require("bcrypt");
-const sendResetEmail = require("../libs/emails/emails");
+
 // Obtener todos los usuarios
 const getAllUsers = async (req, res) => {
   try {
@@ -9,8 +9,7 @@ const getAllUsers = async (req, res) => {
     );
     res.status(200).json(response.rows);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ error: "Server error" });
   }
 };
 
@@ -23,12 +22,11 @@ const getUserById = async (req, res) => {
       [id]
     );
     if (user.rows.length === 0) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
     res.status(200).json(user.rows[0]);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ error: "Server error" });
   }
 };
 
@@ -36,51 +34,74 @@ const getUserById = async (req, res) => {
 const createUser = async (req, res) => {
   const { user_name, user_email, user_password, user_matricula, role_id } =
     req.body;
+
   try {
+    
     const existingUser = await pool.query(
       "SELECT * FROM users WHERE user_email = $1 OR user_matricula = $2",
       [user_email, user_matricula]
     );
 
     if (existingUser.rows.length > 0) {
-      return res.status(400).json({
-        message: "El usuario ya existe con ese correo electrónico o matrícula.",
+      return res.status(401).json({
+        error: "El usuario ya existe con ese correo electrónico o matrícula.",
       });
     }
 
-    //Validar el nombre no tenga espacios
 
-    if(user_name.includes(" ")){
-      return res.status(400).json({ message: "El nombre de usuario no puede contener espacios." });
-    }
-
-
-    // Validar que la matrícula sea numérica y tenga 9 dígitos
     if (!/^\d{9}$/.test(user_matricula)) {
-      return res.status(400).json({
-        message:
+      return res.status(401).json({
+        error:
           "La matrícula debe ser numérica y tener exactamente 9 dígitos.",
       });
     }
 
-    // Validar que la contraseña tenga entre 2 y 15 caracteres
+   
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailRegex.test(user_email)) {
+      return res.status(401).json({
+        error: "El correo electrónico no tiene un formato válido.",
+      });
+    }
+
+    
     if (user_password.length < 2 || user_password.length > 15) {
       return res
-        .status(400)
-        .json({ message: "La contraseña debe tener entre 2 y 15 caracteres." });
+        .status(401)
+        .json({ error: "La contraseña debe tener entre 2 y 15 caracteres." });
     }
 
-    // Validar que el nombre tenga más de 2 caracteres
+   
     if (user_name.length < 2) {
       return res
-        .status(400)
-        .json({ message: "El nombre debe tener más de 2 caracteres." });
+        .status(401)
+        .json({ error: "El nombre debe tener más de 2 caracteres." });
     }
 
+    
+    const nameCheck = await pool.query(
+      "SELECT * FROM users WHERE user_name = $1",
+      [user_name]
+    );
+    if (nameCheck.rows.length > 0) {
+      return res.status(401).json({
+        error: "El nombre de usuario ya está en uso.",
+      });
+    }
+
+    
+    if (!role_id) {
+      return res.status(401).json({
+        error: "El rol es obligatorio.",
+      });
+    }
+
+  
     const saltRounds = 10;
     const genSalt = await bcrypt.genSalt(saltRounds);
     const bcryptPassword = await bcrypt.hash(user_password, genSalt);
 
+  
     await pool.query(
       "INSERT INTO users (user_name, user_email, user_password, user_matricula, role_id) VALUES ($1, $2, $3, $4, $5)",
       [user_name, user_email, bcryptPassword, user_matricula, role_id]
@@ -88,10 +109,11 @@ const createUser = async (req, res) => {
 
     res.status(201).json({ message: "Usuario agregado con éxito!" });
   } catch (err) {
-    console.error(err.message);
+    console.error(err.message); 
     res.status(500).send("Error del servidor");
   }
 };
+
 
 // Actualizar un usuario
 const updateUser = async (req, res) => {
@@ -110,8 +132,8 @@ const updateUser = async (req, res) => {
       );
       if (emailCheck.rowCount > 0) {
         return res
-          .status(400)
-          .json({ message: "El correo electrónico ya está en uso." });
+          .status(401)
+          .json({ error: "El correo electrónico ya está en uso." });
       }
       updates.push(`user_email = $${updates.length + 1}`);
       values.push(user_email);
@@ -125,13 +147,13 @@ const updateUser = async (req, res) => {
       );
       if (matriculaCheck.rowCount > 0) {
         return res
-          .status(400)
-          .json({ message: "La matrícula ya está en uso." });
+          .status(401)
+          .json({ error: "La matrícula ya está en uso." });
       }
 
       if (!/^\d{9}$/.test(user_matricula)) {
-        return res.status(400).json({
-          message:
+        return res.status(401).json({
+          error:
             "La matrícula debe ser numérica y tener exactamente 9 dígitos.",
         });
       }
@@ -139,34 +161,23 @@ const updateUser = async (req, res) => {
       values.push(user_matricula);
     }
 
-    // Validación para el nombre de usuario
+    // Verificar si el nombre de usuario ya existe
     if (user_name) {
-      // Verificar si el nombre de usuario ya existe
-      const userNameCheck = await pool.query(
+      const nameCheck = await pool.query(
         "SELECT * FROM users WHERE user_name = $1 AND id != $2",
         [user_name, id]
       );
-      if (userNameCheck.rowCount > 0) {
+      if (nameCheck.rowCount > 0) {
         return res
-          .status(400)
-          .json({ message: "El nombre de usuario ya está en uso." });
+          .status(401)
+          .json({ error: "El nombre de usuario ya está en uso." });
       }
 
-      // Verificar si el nombre tiene al menos 2 caracteres
       if (user_name.length < 2) {
         return res
-          .status(400)
-          .json({ message: "El nombre debe tener al menos 2 caracteres." });
+          .status(401)
+          .json({ error: "El nombre debe tener al menos 2 caracteres." });
       }
-
-      // Verificar si el nombre tiene espacios
-      if (user_name.includes(" ")) {
-        return res
-          .status(400)
-          .json({ message: "El nombre de usuario no puede contener espacios." });
-      }
-
-      // Si pasa todas las validaciones, se agrega a la lista de actualizaciones
       updates.push(`user_name = $${updates.length + 1}`);
       values.push(user_name);
     }
@@ -179,8 +190,8 @@ const updateUser = async (req, res) => {
 
     if (updates.length === 0) {
       return res
-        .status(400)
-        .json({ message: "No hay campos para actualizar." });
+        .status(401)
+        .json({ error: "No hay campos para actualizar." });
     }
 
     // Añadir el ID del usuario al final de los valores para la consulta
@@ -193,12 +204,12 @@ const updateUser = async (req, res) => {
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(401).json({ error: "Usuario no encontrado" });
     }
 
     res.status(200).json({ message: "Usuario actualizado con éxito!" });
   } catch (err) {
-    console.error(err.message);
+    console.error(err.message);  // Cambié `err.error` a `err.message`
     res.status(500).send("Error del servidor");
   }
 };
@@ -211,7 +222,7 @@ const deleteUser = async (req, res) => {
   try {
     const user = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
     if (user.rows.length === 0) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(404).json({ error: "Usuario no encontrado" });
     }
     const encuestas = await pool.query(
       "SELECT * FROM respuestas_encuesta WHERE user_id = $1",
@@ -221,15 +232,15 @@ const deleteUser = async (req, res) => {
       return res
         .status(400)
         .json({
-          message:
+          error:
             "No se puede eliminar el usuario porque tiene encuestas asociadas",
         });
     }
     await pool.query("DELETE FROM users WHERE id = $1", [id]);
-    res.status(200).json({ message: "Usuario eliminado con éxito" });
+    res.status(200).json({ error: "Usuario eliminado con éxito" });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error del servidor");
+    console.error(err.error);
+    res.status(500).json({ error: "Error del servidor" });
   }
 };
 

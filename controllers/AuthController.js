@@ -26,18 +26,27 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
-
-    try {
-        const decoded = jwt.verify(token, process.env.jwtSecret);
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        await pool.query("UPDATE users SET user_password = $1 WHERE id = $2", [hashedPassword, decoded.userId]);
-        res.json({ message: "Contraseña actualizada" });
-        console.log("Contraseña actualizada");
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send("Server error");
+  
+    if (!newPassword || newPassword.trim() === "") {
+      return res.status(400).json({ error: "La contraseña no puede estar vacía." });
     }
-};
+  
+    if (newPassword.length < 3) {
+      return res.status(400).json({ error: "La contraseña debe tener al menos 6 caracteres." });
+    }
+  
+    try {
+      const decoded = jwt.verify(token, process.env.jwtSecret);
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await pool.query("UPDATE users SET user_password = $1 WHERE id = $2", [hashedPassword, decoded.userId]);
+      res.json({ message: "Contraseña actualizada" });
+      console.log("Contraseña actualizada");
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Error del servidor");
+    }
+  };
+  
 
 module.exports = {
     forgotPassword,

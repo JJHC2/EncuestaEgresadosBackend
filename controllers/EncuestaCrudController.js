@@ -14,15 +14,15 @@ const GetResponses = async (req, res) => {
   }
 };
 
-//Obtener respuestas por nombre del usuario
-const GetResponsesByUserName = async (req, res) => {
+//Obtener respuestas por correo del usuario
+const GetResponsesByUserEmail = async (req, res) => {
   try {
-    const { userName } = req.params;
-    const responses = await pool.query(
-      "SELECT r.seccion, r.pregunta, r.respuesta, u.user_name FROM users u INNER JOIN respuestas_encuesta r ON u.id = r.user_id WHERE u.user_name = $1",
-      [userName.toLowerCase()]
+    const { userEmail } = req.params;
+    const response = await pool.query(
+      "SELECT r.seccion,r.pregunta,r.respuesta,u.user_name FROM users u INNER JOIN respuestas_encuesta r ON u.id = r.user_id WHERE u.user_email = $1",
+      [userEmail]
     );
-    res.json(responses.rows);
+    res.json(response.rows);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -155,7 +155,7 @@ module.exports = {
   SectionData,
   SatisfaccionData,
   GetResponses,
-  GetResponsesByUserName,
+  GetResponsesByUserEmail,
   CountJob,
   JobData,
   CountResponses,
