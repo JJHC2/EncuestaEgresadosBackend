@@ -10,12 +10,32 @@ router.post("/register", validInfo, async (req, res) => {
   try {
     const { name, email, password, matricula, role_id } = req.body;
 
-    // Verificar si el correo o la matrícula ya existen o el usuario ya existe
+    // Validación de la matrícula
+    if (matricula < 5 || matricula > 9) {
+      return res.status(400).json({ error: "La matrícula debe estar entre 5 y 9" });
+    }
+
+   
+    if (!name || !email || !password || !matricula || !role_id) {
+      return res.status(400).json({ error: "Todos los campos son obligatorios" });
+    }
+
+    // Validación del correo electrónico
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: "El correo electrónico no es válido" });
+    }
+
+    
+    if (password.length < 6) {
+      return res.status(400).json({ error: "La contraseña debe tener al menos 6 caracteres" });
+    }
+
+   
     const existingUser = await pool.query(
       "SELECT * FROM users WHERE user_email = $1 OR user_matricula = $2 OR user_name = $3",
       [email, matricula, name]
     );
-    
 
     if (existingUser.rows.length > 0) {
       if (existingUser.rows[0].user_email === email) {
@@ -48,6 +68,7 @@ router.post("/register", validInfo, async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 
 
