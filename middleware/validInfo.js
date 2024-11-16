@@ -24,30 +24,30 @@ module.exports = (req, res, next) => {
     if (req.path === "/register") {
         if (![email, name, password, matricula].every(Boolean)) {
             console.log("Missing one or more credentials",name,email,password,matricula);
-            return res.status(401).json("Missing Credentials");
+            return res.status(401).json({ error: "Faltan Valores"});
         } else if (!validEmail(email)) {
             console.log("Invalid Email");
-            return res.status(401).json("Invalid Email");
+            return res.status(401).json({error : "Email incorrecto"});
         } else if (!validName(name)) {
             console.log("Invalid Name");
-            return res.status(401).json("El nombre solo debe contener letras y espacios.");
+            return res.status(401).json({error: "El nombre solo debe contener letras y espacios"});
         } else if (!validMatricula(matricula)) {
             console.log("Invalid Matricula");
-            return res.status(401).json("La matrícula debe ser numérica y tener entre 4 y 9 caracteres.");
+            return res.status(401).json({error: "La matrícula debe ser numérica y tener entre 4 y 9 caracteres"});
         } else if (!validPassword(password)) {
             console.log("Invalid Password");
-            return res.status(401).json("La contraseña debe tener entre 4 y 15 caracteres y solo contener letras y números.");
+            return res.status(401).json({error: "La contraseña debe tener entre 4 y 15 caracteres y solo contener letras y números"});
         }
     } else if (req.path === "/login") {
         if (![email, password].every(Boolean)) {
             console.log("Missing login credentials");
-            return res.status(401).json("Missing Credentials");
+            return res.status(401).json({error: "Faltan Valores"});
         } else if (!validEmail(email)) {
             console.log("Invalid Email in login");
-            return res.status(401).json("Invalid Email");
+            return res.status(401).json({error: "Correo invalido"});
         } else if (!validPassword(password)) {
             console.log("Invalid Password in login");
-            return res.status(401).json("La contraseña debe tener entre 4 y 15 caracteres y solo contener letras y números.");
+            return res.status(401).json({error: "La contraseña debe tener entre 4 y 15 caracteres y solo contener letras y números"});
         }
     }
 
