@@ -10,42 +10,22 @@ router.post("/register", validInfo, async (req, res) => {
   try {
     const { name, email, password, matricula, role_id } = req.body;
 
-    // Validación de la matrícula
-    if (matricula < 5 || matricula > 9) {
-      return res.status(400).json({ error: "La matrícula debe estar entre 5 y 9" });
-    }
-
-   
-    if (!name || !email || !password || !matricula || !role_id) {
-      return res.status(400).json({ error: "Todos los campos son obligatorios" });
-    }
-
-    // Validación del correo electrónico
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: "El correo electrónico no es válido" });
-    }
-
-    
-    if (password.length < 6) {
-      return res.status(400).json({ error: "La contraseña debe tener al menos 6 caracteres" });
-    }
-
-   
+    // Verificar si el correo o la matrícula ya existen o el usuario ya existe
     const existingUser = await pool.query(
       "SELECT * FROM users WHERE user_email = $1 OR user_matricula = $2 OR user_name = $3",
       [email, matricula, name]
     );
+    
 
     if (existingUser.rows.length > 0) {
       if (existingUser.rows[0].user_email === email) {
-        return res.status(401).json({ error: "El correo ya está registrado" });
+        return res.status(401).json({ message: "El correo ya está registrado" });
       }
       if (existingUser.rows[0].user_matricula === matricula) {
-        return res.status(401).json({ error: "La matrícula ya está registrada" });
+        return res.status(401).json({ message: "La matrícula ya está registrada" });
       }
       if (existingUser.rows[0].user_name === name) {
-        return res.status(401).json({ error: "El usuario ya existe" });
+        return res.status(401).json({ message: "El usuario ya existe" });
       }
     }
 
@@ -63,6 +43,7 @@ router.post("/register", validInfo, async (req, res) => {
     // Generar y devolver el token de autenticación
     const token = jwtGenerator(newUser.rows[0].user_id);
     res.json({ token, role: newUser.rows[0].role_id });
+    console.log("Usuario agregado con exito")
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: "Server error" });
