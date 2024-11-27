@@ -1,6 +1,6 @@
-# Encuesta de Egresados - UT VT
+# Encuesta de Egresados - UTVT
 
-Este proyecto es una **encuesta de egresados** diseñada para la **Universidad Tecnológica Valle del Tepeyac (UT VT)**, con el objetivo de analizar y entender las razones por las cuales los estudiantes no logran insertarse en el mercado laboral tras graduarse. Está desarrollado utilizando **Node.js** para el backend y **React** para el frontend.
+Este proyecto es una **encuesta de egresados** diseñada para la **Universidad Tecnológica Valle del Valle de Toluca (UTVT)**, con el objetivo de analizar y entender las razones por las cuales los estudiantes no logran insertarse en el mercado laboral tras graduarse. Está desarrollado utilizando **Node.js** para el backend y **React** para el frontend.
 
 ## Tecnologías Utilizadas
 
