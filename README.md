@@ -84,5 +84,5 @@ Ejecutando en el puerto 5000
 ### Notas Adicionales
 La base de datos PostgreSQL debe estar configurada y en ejecución antes de iniciar el servidor.
 Si necesitas inicializar las tablas de la base de datos, verifica que sequelize esté configurado correctamente en tu proyecto.
-###Contacto
+### Contacto
 Si tienes dudas o sugerencias, por favor contacta al desarrollador principal en: al222110834@gmail.com
