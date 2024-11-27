@@ -38,36 +38,31 @@ Las siguientes dependencias se utilizan en el backend del proyecto:
 
 Utiliza el siguiente comando para clonar el repositorio en tu máquina local:  
 
-bash
+`bash`
 git clone https://github.com/JJHC2/EncuestaEgresadosBackend.git
 
 2. Acceder al Proyecto
 Accede a la carpeta generada utilizando la terminal o un terminal como PowerShell o el símbolo del sistema:
 
-bash
-Copiar código
+`bash`
 cd <ruta/donde/se/almacenó/la/carpeta>
 Por ejemplo, si la carpeta está en el escritorio:
 
-bash
-Copiar código
+`bash`
 cd ~/Desktop/EncuestaEgresadosBackend
 3. Instalar Dependencias
 Ejecuta el siguiente comando para instalar todas las dependencias necesarias:
 
-bash
-Copiar código
+`bash`
 npm install
 Después, instala la dependencia de desarrollo nodemon de manera global:
 
-bash
-Copiar código
+`bash`
 npm install -g nodemon
 4. Configurar Variables de Entorno
 Crea un archivo .env en la raíz del proyecto con el siguiente contenido, configurando los valores según tu entorno:
 
-env
-Copiar código
+`env`
 PORT=5000
 DB_HOST=localhost
 DB_USER=tu_usuario
@@ -77,21 +72,17 @@ DB_PORT=5432
 5. Iniciar el Proyecto
 Abre el proyecto en tu editor de código. Si usas Visual Studio Code, puedes abrirlo con el comando:
 
-bash
-Copiar código
+`bash`
 code .
 Para iniciar el servidor, ejecuta el siguiente comando en la terminal:
 
-bash
-Copiar código
+`bash`
 nodemon index
 Si todo está configurado correctamente, deberías ver un mensaje como el siguiente:
 
-plaintext
-Copiar código
 Ejecutando en el puerto 5000
-Notas Adicionales
+### Notas Adicionales
 La base de datos PostgreSQL debe estar configurada y en ejecución antes de iniciar el servidor.
 Si necesitas inicializar las tablas de la base de datos, verifica que sequelize esté configurado correctamente en tu proyecto.
-Contacto
+###Contacto
 Si tienes dudas o sugerencias, por favor contacta al desarrollador principal en: al222110834@gmail.com
