@@ -50,6 +50,7 @@ Por ejemplo, si la carpeta está en el escritorio:
 
 `bash`
 cd ~/Desktop/EncuestaEgresadosBackend
+
 3. Instalar Dependencias
 Ejecuta el siguiente comando para instalar todas las dependencias necesarias:
 
@@ -59,6 +60,7 @@ Después, instala la dependencia de desarrollo nodemon de manera global:
 
 `bash`
 npm install -g nodemon
+
 4. Configurar Variables de Entorno
 Crea un archivo .env en la raíz del proyecto con el siguiente contenido, configurando los valores según tu entorno:
 
@@ -69,18 +71,22 @@ DB_USER=tu_usuario
 DB_PASSWORD=tu_contraseña
 DB_NAME=nombre_de_la_base_de_datos
 DB_PORT=5432
+
 5. Iniciar el Proyecto
 Abre el proyecto en tu editor de código. Si usas Visual Studio Code, puedes abrirlo con el comando:
 
 `bash`
 code .
+
 Para iniciar el servidor, ejecuta el siguiente comando en la terminal:
 
 `bash`
 nodemon index
+
 Si todo está configurado correctamente, deberías ver un mensaje como el siguiente:
 
 Ejecutando en el puerto 5000
+
 ### Notas Adicionales
 La base de datos PostgreSQL debe estar configurada y en ejecución antes de iniciar el servidor.
 Si necesitas inicializar las tablas de la base de datos, verifica que sequelize esté configurado correctamente en tu proyecto.
